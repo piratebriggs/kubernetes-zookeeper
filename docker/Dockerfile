@@ -46,7 +46,7 @@ RUN set -x \
     && /usr/local/bin/fix-permissions $ZK_DATA_DIR \
     && /usr/local/bin/fix-permissions $ZK_DATA_LOG_DIR \
     && /usr/local/bin/fix-permissions $ZK_LOG_DIR \
-    && /usr/local/bin/fix-permissions /tmp/zookeeper
+    && /usr/local/bin/fix-permissions /tmp/zookeeper \
 	&& ln -s /opt/zookeeper/conf/ /usr/etc/zookeeper \
 	&& ln -s /opt/zookeeper/bin/* /usr/bin \
 	&& ln -s /opt/zookeeper/$ZK_DIST.jar /usr/share/zookeeper/ \
