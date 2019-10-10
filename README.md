@@ -1,29 +1,46 @@
-# Kubernetes ZooKeeper
-This project contains tools to facilitate the deployment of 
-[Apache ZooKeeper](https://zookeeper.apache.org/) on 
-[Kubernetes](http://kubernetes.io/) using 
-[StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/). 
-It requires Kubernetes 1.7 or greater.
+# Openshift ZooKeeper
 
-## Limitations
-1. Scaling is not currently supported. An ensemble's membership can not be updated in a safe way in 
-ZooKeeper 3.4.10 (The current stable release).
-1. Observers are currently not supported. Contributions are welcome.
-1. Persistent Volumes must be used. emptyDirs will likely result in a loss of data.
 
 ## ZooKeeper Docker Image 
 The [docker](docker) directory contains the [Makefile](docker/Makefile) for a [Docker image](docker/Dockerfile) that 
 runs a ZooKeeper server using some custom [scripts](docker/scripts/README.md).
 
-## Manifests
-The [manifests](manifests) directory contains server Kubernetes [manifests](manifests/README.md) that can be used for 
-demonstration purposes or production deployments. If you primarily deploy manifests directly you can modify any of 
-these to fit your use case.
+## Build and Deployment
+
+Prior to building and deploying Zookeeper, a new project must be allocated to contain the resources for the deployment. Login to an OpenShift environment and execute the following command to create a new project called *zookeeper*
+
+```
+oc new-project zookeeper
+```
+
+A set of templates are available to streamline the build and deployment of Zookeeper and are found in the [templates](templates) directory.
+
+The first step is to build the zookeeper container for deployment in OpenShift. Since the Zookeeper image uses UBI as the base, the ImageStream must be first added to OpenShift
+
+Execute the following command to create the ImageStream:
+
+```
+oc create -f templates/rhel7-is.json
+oc create -f templates/ubi-is.json
+```
+
+Next, instantiate the template to create a Build Configuration to produce a docker image
+
+```
+oc process -f templates/zookeeper-build.json | oc create -f-
+```
+
+A new image build will be kicked off automatically. It can be tracked by running `oc logs -f builds/zookeeper-1`
+
+Once the build completes successfully, the newly created image can be deployed to OpenShift.
 
 ## Helm
 The [helm](helm/zookeeper) directory contains a [helm repository](helm/zookeeper/README.md) that deploys a ZooKeeper 
 ensemble.
 
+```
+helm template <name> -f helm/zookeeper/values-mini.yaml ./helm/zookeeper | oc apply -f-
+```
 
 ## Administration and Configuration
 Regardless of whether you use manifests or helm to deploy your ZooKeeper ensemble, there are some common administration 
