@@ -38,8 +38,6 @@ apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   name: "{{ printf "zk-pdb-%s" .Release.Name | trunc 24 }}"
-  annotations:
-    helm.sh/created: {{.Release.Time.Seconds | quote }}
   labels:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
@@ -55,8 +53,6 @@ apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   name: "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
-  annotations:
-    helm.sh/created: {{.Release.Time.Seconds | quote }}
   labels:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
@@ -100,7 +96,6 @@ spec:
       {{- end}}
       containers:
       - name: k8szk
-        imagePullPolicy: {{.Values.ImagePullPolicy}}
         image: {{.Values.Image}}
         resources:
           requests:
@@ -154,8 +149,7 @@ spec:
         - name: datadir
           mountPath: /var/lib/zookeeper
       securityContext:
-        fsGroup: 1000
-        runAsUser: 1000
+        runAsUser: 1000510002
   volumeClaimTemplates:
   - metadata:
       name: datadir
