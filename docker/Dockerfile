@@ -39,8 +39,7 @@ COPY scripts /opt/zookeeper/bin/
 
 # Create a user for the zookeeper process and configure file system ownership 
 # for nessecary directories and symlink the distribution as a user executable
-RUN set -x \
-	&& useradd -u 1000510000 -r -c "Zookeeper User" $ZK_USER 
+RUN set -x 
 
 WORKDIR "/opt/zookeeper"
 
