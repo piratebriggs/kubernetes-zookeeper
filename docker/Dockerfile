@@ -43,6 +43,10 @@ RUN set -x \
 	&& useradd -u 1000510000 -r -c "Zookeeper User" $ZK_USER \
     && mkdir -p $ZK_DATA_DIR $ZK_DATA_LOG_DIR $ZK_LOG_DIR /usr/share/zookeeper /tmp/zookeeper /usr/etc/ \
 	&& chown -R "$ZK_USER:0" /opt/$ZK_DIST $ZK_DATA_DIR $ZK_LOG_DIR $ZK_DATA_LOG_DIR /tmp/zookeeper \
+    && ln -s /opt/zookeeper/conf/ /usr/etc/zookeeper \
+	&& ln -s /opt/zookeeper/bin/* /usr/bin \
+	&& ln -s /opt/zookeeper/$ZK_DIST.jar /usr/share/zookeeper/ \
+	&& ln -s /opt/zookeeper/lib/* /usr/share/zookeeper 
 
 WORKDIR "/opt/zookeeper"
 
